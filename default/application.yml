@@ -1,0 +1,373 @@
+---
+app:
+  alert-retention-days: 7
+  cf-neo4j-core:
+    item-cf-boost: 1
+    like-max-amount: 2000
+    performer-similarity-max-number: 10
+    performer-similarity-min-in-common: 1
+    performer-similarity-threshold: 0.05
+    recommendation-type: "item"
+    recommendations-limit: 50
+    similarity-calculation: "tanimoto"
+    similarity-output-json-enabled: true
+    user-cf-boost: 1
+    user-similarity-max-number: 10
+    user-similarity-min-in-common: 1
+    user-similarity-threshold: 0.05
+  event-store-redis:
+    collaborative-filtering-score-pareto-eighty-percent-level: 15.0
+    event-boosting:
+      add-to-favourites: "20.0f"
+      free-chat: "1.0f"
+      private-chat: "3.0f"
+      sneak-peek: "0.0f"
+      surprise: "5.0f"
+    historical-event-expiry: 7776000000
+    historical-score-pareto-eighty-percent-level: 25.0
+    pareto-transformed-score-max-value: 10.0
+    session-event-expiry: 2592000000
+    session-score-pareto-eighty-percent-level: 5.0
+  log-monitor:
+    enabled: false
+    nr-of-matched-examples-to-return: 1
+    rules:
+    - custom-time-frame: ""
+      enabled: true
+      field: "level"
+      name: "Error detection"
+      type: "match"
+      value: "error"
+    - custom-time-frame: ""
+      enabled: true
+      field: "level"
+      name: "Warn detection"
+      type: "match"
+      value: "warn"
+    - custom-time-frame: ""
+      enabled: true
+      field: "response_time"
+      filter: "log_type:recommendation"
+      name: "Average recommendation response time exceeds a limit"
+      type: "average_above"
+      value: 100
+    - custom-time-frame: ""
+      enabled: true
+      field: "response_time"
+      filter: "log_type:recommendation"
+      name: "Maximum recommendation response time exceeds a limit"
+      type: "maximum_above"
+      value: 1000
+    - custom-time-frame: ""
+      enabled: true
+      field: "nr_of_items"
+      filter: "log_type:online_performer_status_sync"
+      name: "Average number of online performer status updates is less than a limit"
+      type: "average_below"
+      value: 5
+    - custom-time-frame: 10
+      enabled: true
+      field: "nr_of_items"
+      filter: "log_type:performer_data_change_event"
+      name: "Number of performer data change events is less than a limit"
+      type: "sum_below"
+      value: 1
+    - custom-time-frame: ""
+      enabled: true
+      field: "nr_of_items"
+      filter: "log_type:user_activity_event"
+      name: "Number of user activity events is less than a limit"
+      type: "sum_below"
+      value: 1
+  reco:
+    page-size-multiplier: 2
+  search-engine:
+    boosting-weights:
+      last-search-term-weights:
+        Age: 3.8
+        Appearance: 3.1
+        Audio: 2.5
+        BreastSize: 3.5
+        Build: 3.6
+        CamQuality: 2.1
+        CamSoftware: 2.0
+        CamType: 2.2
+        Ethnicity: 3.9
+        Extended: 3.3
+        EyeColor: 3.2
+        HairColor: 3.4
+        HairLength: 2.6
+        Height: 2.4
+        Language: 2.8
+        PenisSize: 3.0
+        Price: 3.7
+        SpecialPlaceWillingness: 2.7
+        Weight: 2.3
+        Willingness: 2.9
+      performer-property-weights:
+      - propertyName: "HasProfilePicture"
+        propertyValue: 1
+        weight: 1000000.0
+      - propertyName: "Miscellaneous"
+        propertyValue: "jasmin_selected"
+        weight: 100.0
+      search-term-weights:
+        Age: 12000.0
+        Appearance: 7000.0
+        Audio: 1000.0
+        BreastSize: 9000.0
+        Build: 10000.0
+        Ethnicity: 13000.0
+        HairColor: 8000.0
+        HairLength: 2000.0
+        Language: 4000.0
+        PenisSize: 6000.0
+        Price: 11000.0
+        SpecialPlaceWillingness: 3000.0
+        Willingness: 5000.0
+        itemId: 14000.0
+      section-weights:
+        free: 600000.0
+        members_only: 400000.0
+        private: 200000.0
+      similarity-search-term-weights:
+        Age: 19000.0
+        Appearance: 12000.0
+        Audio: 6000.0
+        BreastSize: 16000.0
+        Build: 17000.0
+        CamQuality: 2000.0
+        CamSoftware: 1000.0
+        CamType: 3000.0
+        Ethnicity: 20000.0
+        Extended: 14000.0
+        EyeColor: 13000.0
+        HairColor: 15000.0
+        HairLength: 7000.0
+        Height: 5000.0
+        Language: 9000.0
+        PenisSize: 11000.0
+        Price: 18000.0
+        SpecialPlaceWillingness: 8000.0
+        Weight: 4000.0
+        Willingness: 10000.0
+    competing-factors:
+      chat-recommendation-factors:
+        collaborativeFiltering: 1.0
+        performerPopularity: 0.0
+        performerQualityCategory: 0.0
+        performerRating: 0.0
+        userHistoricalActivity: 0.0
+        userLastSearch: 0.0
+        userSessionActivity: 0.0
+      gravity-set-factors:
+        collaborativeFiltering: 1.0
+        performerPopularity: 0.0
+        performerQualityCategory: 0.0
+        performerRating: 0.0
+        userHistoricalActivity: 1.0
+        userLastSearch: 1.0
+        userSessionActivity: 1.0
+      most-popular-factors:
+        performerPopularity: 1.0
+        performerQualityCategory: 1.0
+        performerRating: 1.0
+      search-page-factors:
+        collaborativeFiltering: 1.0
+        lastOnlineDecay: 1.0
+        performerPopularity: 0.0
+        performerQualityCategory: 0.0
+        performerRating: 0.0
+        userHistoricalActivity: 1.0
+        userLastSearch: 1.0
+        userSessionActivity: 1.0
+      top-hit-factors:
+        performerPopularity: 1.0
+        performerQualityCategory: 1.0
+        performerRating: 1.0
+    normalization-config:
+      pareto-transformed-score-max-value: 10.0
+      popularity-minimum-treshold: 0.0
+      popularity-pareto-eighty-percent-level: 25.0
+      rating-minimum-treshold: 100.0
+      rating-pareto-eighty-percent-level: 2000.0
+    query-config:
+      last-online-decay:
+        decay: 0.5
+        enabled: true
+        offset: 1
+        scale: 100
+      response-structure: "verbose"
+  worker-core:
+    filters:
+      boy:
+      - "Ethnicity:asian"
+      - "Ethnicity:ebony"
+      - "Miscellaneous:0_98_credit"
+      - "Badges:new_performer"
+      - "Badges:porn_star"
+      - "Badges:hustler_model"
+      - "Ethnicity:latin"
+      - "Age:age_18_22"
+      couple:
+      - "Ethnicity:asian"
+      - "Ethnicity:ebony"
+      - "Miscellaneous:0_98_credit"
+      - "Badges:new_performer"
+      - "Badges:porn_star"
+      - "Badges:hustler_model"
+      - "Ethnicity:latin"
+      - "Age:age_18_22"
+      gay:
+      - "Ethnicity:asian"
+      - "Ethnicity:ebony"
+      - "Miscellaneous:0_98_credit"
+      - "Badges:new_performer"
+      - "Badges:porn_star"
+      - "Badges:hustler_model"
+      - "Ethnicity:latin"
+      - "Age:age_18_22"
+      girl:
+      - "Ethnicity:asian"
+      - "Ethnicity:ebony"
+      - "Miscellaneous:0_98_credit"
+      - "Badges:new_performer"
+      - "Badges:porn_star"
+      - "Badges:hustler_model"
+      - "Ethnicity:latin"
+      - "Age:age_18_22"
+      hot_flirt:
+      - "Ethnicity:asian"
+      - "Ethnicity:ebony"
+      - "Miscellaneous:0_98_credit"
+      - "Badges:new_performer"
+      - "Badges:porn_star"
+      - "Badges:hustler_model"
+      - "Ethnicity:latin"
+      - "Age:age_18_22"
+      lesbian:
+      - "Ethnicity:asian"
+      - "Ethnicity:ebony"
+      - "Miscellaneous:0_98_credit"
+      - "Badges:new_performer"
+      - "Badges:porn_star"
+      - "Badges:hustler_model"
+      - "Ethnicity:latin"
+      - "Age:age_18_22"
+      mature:
+      - "Ethnicity:asian"
+      - "Ethnicity:ebony"
+      - "Miscellaneous:0_98_credit"
+      - "Badges:new_performer"
+      - "Badges:porn_star"
+      - "Badges:hustler_model"
+      - "Ethnicity:latin"
+    view-boosters:
+      free-view-booster: 2.1
+      guest-view-booster: 1.1
+      paying-view-booster: 3.1
+logging:
+  log-collection:
+    log-retention-days: 7
+spring:
+  cloud:
+    config:
+      allow-override: "true"
+      override-none: "false"
+      override-system-properties: "false"
+  alerts-index-config:
+    number-of-replicas: 1
+    number-of-shards: 1
+  cf-neo4j-core:
+    executor:
+      core-pool-size: 4
+      max-pool-size: 8
+      queue-capacity: 10000000
+    rdb-listener-source: "local"
+    rdb-poll-delay: 1000
+    rdb-poll-rate: 100000
+    rdb-source:
+      ftp-host: "192.168.10.67"
+      ftp-password: "password"
+      ftp-port: 21
+      ftp-remote-folder: "/var/lib/redis/6379"
+      ftp-user: "user"
+      rdb-folder: "${user.home}/Servers/redis-3.0.7/src/"
+    recommendation-batch-size: 10
+  elasticsearch-config:
+    cluster-nodes:
+    - "127.0.0.1"
+    http-port: 9200
+    transport-port: 9300
+  gateway:
+    client-param-name: "config"
+    default-route-config: "default"
+    route-config:
+      default:
+        enabled: true
+        major-minor-version: "0.5"
+        profile: "default"
+      jasmin:
+        enabled: true
+        major-minor-version: "0.5"
+        profile: "jasmin"
+  index-config:
+    number-of-replicas: 2
+    number-of-shards: 1
+  instance-monitor:
+    apps:
+      cfneo4j:
+        enabled: false
+        env-properties:
+        - "spring.cf-neo4j-core.enabled"
+      worker:
+        enabled: true
+        env-properties:
+        - "spring.worker-core.performer-status-scheduler.enabled"
+        - "spring.worker-core.top-hits-scheduler.enabled"
+    health:
+      enabled: true
+    scheduler:
+      every-x-second: "x%2==0"
+  log-elasticsearch-config:
+    cluster-name: "reco-cluster"
+    cluster-nodes:
+    - "127.0.0.1"
+    http-port: 9200
+    transport-port: 9300
+  log-monitor:
+    scheduler:
+      initial-delay: 60000
+      rate: 60000
+  mail:
+    sender:
+      enabled: true
+      host: "smtp.gmail.com"
+      message-from: "livejasminregistry@gmail.com"
+      message-to: "livejasminregistry@gmail.com"
+      password: "livejasmina"
+      port: 587
+      rule-average-above-message-template: "Rule '%s' has matched. '%s' field average\
+        \ is '%s' which exceeds the treshold '%s'"
+      rule-average-below-message-template: "Rule '%s' has matched. '%s' field average\
+        \ is '%s' less than the treshold '%s'"
+      rule-match-message-template: "Rule '%s' has matched. '%s' field contained the\
+        \ '%s' value. %s log matched, examples '%s'"
+      rule-maximum-above-message-template: "Rule '%s' has matched. '%s' field maximum\
+        \ is '%s' which exceeds the treshold '%s'"
+      rule-message-subject: "Rule '%s' has matched"
+      rule-sum-below-message-template: "Rule '%s' has matched. Sum of '%s' is '%s'\
+        \ less than the treshold '%s'"
+      server-down-message-subject: "Microservice is down :("
+      server-down-message-template: "Microservice '%s' is down :("
+      username: "livejasminregistry"
+  worker-core:
+    performer-status-scheduler:
+      initial-delay: 350
+      pool-size: 1
+      rate: 1100
+    top-hits-cache-size: 200
+    top-hits-scheduler:
+      initial-delay: 400
+      pool-size: 1
+      rate: 10000
